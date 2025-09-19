@@ -1,0 +1,1028 @@
+{
+  "metadata": {
+    "database_name": "mcp_test_db",
+    "generated_at": "2025-09-19T05:57:17.063443+00:00",
+    "version": "1.0.0",
+    "total_tables": 5
+  },
+  "tables": {
+    "categories": {
+      "table_info": {
+        "TABLE_NAME": "categories",
+        "TABLE_ROWS": 11,
+        "AVG_ROW_LENGTH": 1489,
+        "DATA_LENGTH": 16384,
+        "MAX_DATA_LENGTH": 0,
+        "INDEX_LENGTH": 32768,
+        "DATA_FREE": 0,
+        "AUTO_INCREMENT": 12,
+        "CREATE_TIME": "2025-09-11 07:54:37",
+        "UPDATE_TIME": "2025-09-11 07:54:37",
+        "CHECK_TIME": null,
+        "TABLE_COLLATION": "utf8mb4_unicode_ci",
+        "CHECKSUM": null,
+        "CREATE_OPTIONS": "",
+        "TABLE_COMMENT": ""
+      },
+      "columns": [
+        {
+          "Field": "id",
+          "Type": "int",
+          "Null": "NO",
+          "Key": "PRI",
+          "Default": null,
+          "Extra": "auto_increment"
+        },
+        {
+          "Field": "name",
+          "Type": "varchar(50)",
+          "Null": "NO",
+          "Key": "UNI",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "description",
+          "Type": "text",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "parent_id",
+          "Type": "int",
+          "Null": "YES",
+          "Key": "MUL",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "created_at",
+          "Type": "timestamp",
+          "Null": "YES",
+          "Key": "",
+          "Default": "CURRENT_TIMESTAMP",
+          "Extra": "DEFAULT_GENERATED"
+        }
+      ],
+      "indexes": [
+        {
+          "Table": "categories",
+          "Non_unique": 0,
+          "Key_name": "PRIMARY",
+          "Seq_in_index": 1,
+          "Column_name": "id",
+          "Collation": "A",
+          "Cardinality": 11,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        },
+        {
+          "Table": "categories",
+          "Non_unique": 0,
+          "Key_name": "name",
+          "Seq_in_index": 1,
+          "Column_name": "name",
+          "Collation": "A",
+          "Cardinality": 11,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        },
+        {
+          "Table": "categories",
+          "Non_unique": 1,
+          "Key_name": "parent_id",
+          "Seq_in_index": 1,
+          "Column_name": "parent_id",
+          "Collation": "A",
+          "Cardinality": 4,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "YES",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        }
+      ],
+      "foreign_keys": [
+        {
+          "COLUMN_NAME": "parent_id",
+          "REFERENCED_TABLE_NAME": "categories",
+          "REFERENCED_COLUMN_NAME": "id",
+          "CONSTRAINT_NAME": "categories_ibfk_1"
+        }
+      ],
+      "sample_data": [
+        {
+          "id": 1,
+          "name": "Electronics",
+          "description": "Electronic devices and accessories",
+          "parent_id": null,
+          "created_at": "2025-09-11 07:54:37"
+        },
+        {
+          "id": 2,
+          "name": "Clothing",
+          "description": "Apparel and fashion items",
+          "parent_id": null,
+          "created_at": "2025-09-11 07:54:37"
+        },
+        {
+          "id": 3,
+          "name": "Books",
+          "description": "Books and educational materials",
+          "parent_id": null,
+          "created_at": "2025-09-11 07:54:37"
+        }
+      ],
+      "relationships": {
+        "references": [
+          {
+            "COLUMN_NAME": "parent_id",
+            "REFERENCED_TABLE_NAME": "categories",
+            "REFERENCED_COLUMN_NAME": "id",
+            "CONSTRAINT_NAME": "categories_ibfk_1"
+          }
+        ],
+        "referenced_by": [
+          {
+            "table": "categories",
+            "column": "parent_id",
+            "constraint": "categories_ibfk_1"
+          },
+          {
+            "table": "products",
+            "column": "category_id",
+            "constraint": "fk_products_category"
+          }
+        ]
+      }
+    },
+    "order_items": {
+      "table_info": {
+        "TABLE_NAME": "order_items",
+        "TABLE_ROWS": 14,
+        "AVG_ROW_LENGTH": 1170,
+        "DATA_LENGTH": 16384,
+        "MAX_DATA_LENGTH": 0,
+        "INDEX_LENGTH": 32768,
+        "DATA_FREE": 0,
+        "AUTO_INCREMENT": 15,
+        "CREATE_TIME": "2025-09-11 07:54:37",
+        "UPDATE_TIME": "2025-09-11 07:54:37",
+        "CHECK_TIME": null,
+        "TABLE_COLLATION": "utf8mb4_unicode_ci",
+        "CHECKSUM": null,
+        "CREATE_OPTIONS": "",
+        "TABLE_COMMENT": ""
+      },
+      "columns": [
+        {
+          "Field": "id",
+          "Type": "int",
+          "Null": "NO",
+          "Key": "PRI",
+          "Default": null,
+          "Extra": "auto_increment"
+        },
+        {
+          "Field": "order_id",
+          "Type": "int",
+          "Null": "NO",
+          "Key": "MUL",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "product_id",
+          "Type": "int",
+          "Null": "NO",
+          "Key": "MUL",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "quantity",
+          "Type": "int",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "unit_price",
+          "Type": "decimal(10,2)",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        }
+      ],
+      "indexes": [
+        {
+          "Table": "order_items",
+          "Non_unique": 0,
+          "Key_name": "PRIMARY",
+          "Seq_in_index": 1,
+          "Column_name": "id",
+          "Collation": "A",
+          "Cardinality": 14,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        },
+        {
+          "Table": "order_items",
+          "Non_unique": 1,
+          "Key_name": "idx_order_items_order",
+          "Seq_in_index": 1,
+          "Column_name": "order_id",
+          "Collation": "A",
+          "Cardinality": 10,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        },
+        {
+          "Table": "order_items",
+          "Non_unique": 1,
+          "Key_name": "idx_order_items_product",
+          "Seq_in_index": 1,
+          "Column_name": "product_id",
+          "Collation": "A",
+          "Cardinality": 10,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        }
+      ],
+      "foreign_keys": [
+        {
+          "COLUMN_NAME": "order_id",
+          "REFERENCED_TABLE_NAME": "orders",
+          "REFERENCED_COLUMN_NAME": "id",
+          "CONSTRAINT_NAME": "order_items_ibfk_1"
+        },
+        {
+          "COLUMN_NAME": "product_id",
+          "REFERENCED_TABLE_NAME": "products",
+          "REFERENCED_COLUMN_NAME": "id",
+          "CONSTRAINT_NAME": "order_items_ibfk_2"
+        }
+      ],
+      "sample_data": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "product_id": 1,
+          "quantity": 1,
+          "unit_price": "999.99"
+        },
+        {
+          "id": 2,
+          "order_id": 2,
+          "product_id": 4,
+          "quantity": 1,
+          "unit_price": "1299.99"
+        },
+        {
+          "id": 3,
+          "order_id": 3,
+          "product_id": 5,
+          "quantity": 1,
+          "unit_price": "150.00"
+        }
+      ],
+      "relationships": {
+        "references": [
+          {
+            "COLUMN_NAME": "order_id",
+            "REFERENCED_TABLE_NAME": "orders",
+            "REFERENCED_COLUMN_NAME": "id",
+            "CONSTRAINT_NAME": "order_items_ibfk_1"
+          },
+          {
+            "COLUMN_NAME": "product_id",
+            "REFERENCED_TABLE_NAME": "products",
+            "REFERENCED_COLUMN_NAME": "id",
+            "CONSTRAINT_NAME": "order_items_ibfk_2"
+          }
+        ],
+        "referenced_by": []
+      }
+    },
+    "orders": {
+      "table_info": {
+        "TABLE_NAME": "orders",
+        "TABLE_ROWS": 10,
+        "AVG_ROW_LENGTH": 1638,
+        "DATA_LENGTH": 16384,
+        "MAX_DATA_LENGTH": 0,
+        "INDEX_LENGTH": 49152,
+        "DATA_FREE": 0,
+        "AUTO_INCREMENT": 11,
+        "CREATE_TIME": "2025-09-11 07:54:37",
+        "UPDATE_TIME": "2025-09-11 07:54:37",
+        "CHECK_TIME": null,
+        "TABLE_COLLATION": "utf8mb4_unicode_ci",
+        "CHECKSUM": null,
+        "CREATE_OPTIONS": "",
+        "TABLE_COMMENT": ""
+      },
+      "columns": [
+        {
+          "Field": "id",
+          "Type": "int",
+          "Null": "NO",
+          "Key": "PRI",
+          "Default": null,
+          "Extra": "auto_increment"
+        },
+        {
+          "Field": "user_id",
+          "Type": "int",
+          "Null": "NO",
+          "Key": "MUL",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "total_amount",
+          "Type": "decimal(10,2)",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "status",
+          "Type": "enum('pending','processing','shipped','delivered','cancelled')",
+          "Null": "YES",
+          "Key": "MUL",
+          "Default": "pending",
+          "Extra": ""
+        },
+        {
+          "Field": "order_date",
+          "Type": "timestamp",
+          "Null": "YES",
+          "Key": "MUL",
+          "Default": "CURRENT_TIMESTAMP",
+          "Extra": "DEFAULT_GENERATED"
+        },
+        {
+          "Field": "shipping_address",
+          "Type": "json",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "notes",
+          "Type": "text",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        }
+      ],
+      "indexes": [
+        {
+          "Table": "orders",
+          "Non_unique": 0,
+          "Key_name": "PRIMARY",
+          "Seq_in_index": 1,
+          "Column_name": "id",
+          "Collation": "A",
+          "Cardinality": 10,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        },
+        {
+          "Table": "orders",
+          "Non_unique": 1,
+          "Key_name": "idx_orders_user",
+          "Seq_in_index": 1,
+          "Column_name": "user_id",
+          "Collation": "A",
+          "Cardinality": 9,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        },
+        {
+          "Table": "orders",
+          "Non_unique": 1,
+          "Key_name": "idx_orders_status",
+          "Seq_in_index": 1,
+          "Column_name": "status",
+          "Collation": "A",
+          "Cardinality": 5,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "YES",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        },
+        {
+          "Table": "orders",
+          "Non_unique": 1,
+          "Key_name": "idx_orders_date",
+          "Seq_in_index": 1,
+          "Column_name": "order_date",
+          "Collation": "A",
+          "Cardinality": 10,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "YES",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        }
+      ],
+      "foreign_keys": [
+        {
+          "COLUMN_NAME": "user_id",
+          "REFERENCED_TABLE_NAME": "users",
+          "REFERENCED_COLUMN_NAME": "id",
+          "CONSTRAINT_NAME": "orders_ibfk_1"
+        }
+      ],
+      "sample_data": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "total_amount": "999.99",
+          "status": "delivered",
+          "order_date": "2024-01-10 14:30:00",
+          "shipping_address": "{\"zip\": \"10001\", \"city\": \"New York\", \"state\": \"NY\", \"street\": \"123 Main St\"}",
+          "notes": "Please leave at front door"
+        },
+        {
+          "id": 2,
+          "user_id": 2,
+          "total_amount": "1299.99",
+          "status": "shipped",
+          "order_date": "2024-01-12 09:15:00",
+          "shipping_address": "{\"zip\": \"90210\", \"city\": \"Los Angeles\", \"state\": \"CA\", \"street\": \"456 Oak Ave\"}",
+          "notes": "Signature required"
+        },
+        {
+          "id": 3,
+          "user_id": 3,
+          "total_amount": "150.00",
+          "status": "processing",
+          "order_date": "2024-01-14 16:45:00",
+          "shipping_address": "{\"zip\": \"60601\", \"city\": \"Chicago\", \"state\": \"IL\", \"street\": \"789 Pine Rd\"}",
+          "notes": "Gift wrapping requested"
+        }
+      ],
+      "relationships": {
+        "references": [
+          {
+            "COLUMN_NAME": "user_id",
+            "REFERENCED_TABLE_NAME": "users",
+            "REFERENCED_COLUMN_NAME": "id",
+            "CONSTRAINT_NAME": "orders_ibfk_1"
+          }
+        ],
+        "referenced_by": [
+          {
+            "table": "order_items",
+            "column": "order_id",
+            "constraint": "order_items_ibfk_1"
+          }
+        ]
+      }
+    },
+    "products": {
+      "table_info": {
+        "TABLE_NAME": "products",
+        "TABLE_ROWS": 13,
+        "AVG_ROW_LENGTH": 1260,
+        "DATA_LENGTH": 16384,
+        "MAX_DATA_LENGTH": 0,
+        "INDEX_LENGTH": 32768,
+        "DATA_FREE": 0,
+        "AUTO_INCREMENT": 14,
+        "CREATE_TIME": "2025-09-11 07:54:37",
+        "UPDATE_TIME": "2025-09-11 07:54:37",
+        "CHECK_TIME": null,
+        "TABLE_COLLATION": "utf8mb4_unicode_ci",
+        "CHECKSUM": null,
+        "CREATE_OPTIONS": "",
+        "TABLE_COMMENT": ""
+      },
+      "columns": [
+        {
+          "Field": "id",
+          "Type": "int",
+          "Null": "NO",
+          "Key": "PRI",
+          "Default": null,
+          "Extra": "auto_increment"
+        },
+        {
+          "Field": "name",
+          "Type": "varchar(100)",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "description",
+          "Type": "text",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "price",
+          "Type": "decimal(10,2)",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "category_id",
+          "Type": "int",
+          "Null": "YES",
+          "Key": "MUL",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "stock_quantity",
+          "Type": "int",
+          "Null": "YES",
+          "Key": "",
+          "Default": "0",
+          "Extra": ""
+        },
+        {
+          "Field": "is_available",
+          "Type": "tinyint(1)",
+          "Null": "YES",
+          "Key": "MUL",
+          "Default": "1",
+          "Extra": ""
+        },
+        {
+          "Field": "created_at",
+          "Type": "timestamp",
+          "Null": "YES",
+          "Key": "",
+          "Default": "CURRENT_TIMESTAMP",
+          "Extra": "DEFAULT_GENERATED"
+        },
+        {
+          "Field": "updated_at",
+          "Type": "timestamp",
+          "Null": "YES",
+          "Key": "",
+          "Default": "CURRENT_TIMESTAMP",
+          "Extra": "DEFAULT_GENERATED on update CURRENT_TIMESTAMP"
+        },
+        {
+          "Field": "metadata",
+          "Type": "json",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        }
+      ],
+      "indexes": [
+        {
+          "Table": "products",
+          "Non_unique": 0,
+          "Key_name": "PRIMARY",
+          "Seq_in_index": 1,
+          "Column_name": "id",
+          "Collation": "A",
+          "Cardinality": 13,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        },
+        {
+          "Table": "products",
+          "Non_unique": 1,
+          "Key_name": "idx_products_category",
+          "Seq_in_index": 1,
+          "Column_name": "category_id",
+          "Collation": "A",
+          "Cardinality": 8,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "YES",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        },
+        {
+          "Table": "products",
+          "Non_unique": 1,
+          "Key_name": "idx_products_available",
+          "Seq_in_index": 1,
+          "Column_name": "is_available",
+          "Collation": "A",
+          "Cardinality": 1,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "YES",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        }
+      ],
+      "foreign_keys": [
+        {
+          "COLUMN_NAME": "category_id",
+          "REFERENCED_TABLE_NAME": "categories",
+          "REFERENCED_COLUMN_NAME": "id",
+          "CONSTRAINT_NAME": "fk_products_category"
+        }
+      ],
+      "sample_data": [
+        {
+          "id": 1,
+          "name": "iPhone 15 Pro",
+          "description": "Latest iPhone with advanced camera system",
+          "price": "999.99",
+          "category_id": 6,
+          "stock_quantity": 25,
+          "is_available": 1,
+          "created_at": "2025-09-11 07:54:37",
+          "updated_at": "2025-09-11 07:54:37",
+          "metadata": "{\"brand\": \"Apple\", \"color\": \"Natural Titanium\", \"model\": \"iPhone 15 Pro\", \"storage\": \"256GB\"}"
+        },
+        {
+          "id": 2,
+          "name": "MacBook Pro 16\"",
+          "description": "Powerful laptop for professionals",
+          "price": "2499.99",
+          "category_id": 7,
+          "stock_quantity": 15,
+          "is_available": 1,
+          "created_at": "2025-09-11 07:54:37",
+          "updated_at": "2025-09-11 07:54:37",
+          "metadata": "{\"brand\": \"Apple\", \"model\": \"MacBook Pro\", \"processor\": \"M3 Pro\", \"screen_size\": \"16-inch\"}"
+        },
+        {
+          "id": 3,
+          "name": "Samsung Galaxy S24",
+          "description": "Android flagship smartphone",
+          "price": "799.99",
+          "category_id": 6,
+          "stock_quantity": 30,
+          "is_available": 1,
+          "created_at": "2025-09-11 07:54:37",
+          "updated_at": "2025-09-11 07:54:37",
+          "metadata": "{\"brand\": \"Samsung\", \"color\": \"Onyx Black\", \"model\": \"Galaxy S24\", \"storage\": \"128GB\"}"
+        }
+      ],
+      "relationships": {
+        "references": [
+          {
+            "COLUMN_NAME": "category_id",
+            "REFERENCED_TABLE_NAME": "categories",
+            "REFERENCED_COLUMN_NAME": "id",
+            "CONSTRAINT_NAME": "fk_products_category"
+          }
+        ],
+        "referenced_by": [
+          {
+            "table": "order_items",
+            "column": "product_id",
+            "constraint": "order_items_ibfk_2"
+          }
+        ]
+      }
+    },
+    "users": {
+      "table_info": {
+        "TABLE_NAME": "users",
+        "TABLE_ROWS": 10,
+        "AVG_ROW_LENGTH": 1638,
+        "DATA_LENGTH": 16384,
+        "MAX_DATA_LENGTH": 0,
+        "INDEX_LENGTH": 32768,
+        "DATA_FREE": 0,
+        "AUTO_INCREMENT": 11,
+        "CREATE_TIME": "2025-09-11 07:54:37",
+        "UPDATE_TIME": "2025-09-11 07:54:37",
+        "CHECK_TIME": null,
+        "TABLE_COLLATION": "utf8mb4_unicode_ci",
+        "CHECKSUM": null,
+        "CREATE_OPTIONS": "",
+        "TABLE_COMMENT": ""
+      },
+      "columns": [
+        {
+          "Field": "id",
+          "Type": "int",
+          "Null": "NO",
+          "Key": "PRI",
+          "Default": null,
+          "Extra": "auto_increment"
+        },
+        {
+          "Field": "username",
+          "Type": "varchar(50)",
+          "Null": "NO",
+          "Key": "UNI",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "email",
+          "Type": "varchar(100)",
+          "Null": "NO",
+          "Key": "UNI",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "first_name",
+          "Type": "varchar(50)",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "last_name",
+          "Type": "varchar(50)",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "age",
+          "Type": "int",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "is_active",
+          "Type": "tinyint(1)",
+          "Null": "YES",
+          "Key": "MUL",
+          "Default": "1",
+          "Extra": ""
+        },
+        {
+          "Field": "created_at",
+          "Type": "timestamp",
+          "Null": "YES",
+          "Key": "",
+          "Default": "CURRENT_TIMESTAMP",
+          "Extra": "DEFAULT_GENERATED"
+        },
+        {
+          "Field": "updated_at",
+          "Type": "timestamp",
+          "Null": "YES",
+          "Key": "",
+          "Default": "CURRENT_TIMESTAMP",
+          "Extra": "DEFAULT_GENERATED on update CURRENT_TIMESTAMP"
+        },
+        {
+          "Field": "last_login",
+          "Type": "timestamp",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "profile_data",
+          "Type": "json",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        }
+      ],
+      "indexes": [
+        {
+          "Table": "users",
+          "Non_unique": 0,
+          "Key_name": "PRIMARY",
+          "Seq_in_index": 1,
+          "Column_name": "id",
+          "Collation": "A",
+          "Cardinality": 10,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        },
+        {
+          "Table": "users",
+          "Non_unique": 0,
+          "Key_name": "username",
+          "Seq_in_index": 1,
+          "Column_name": "username",
+          "Collation": "A",
+          "Cardinality": 10,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        },
+        {
+          "Table": "users",
+          "Non_unique": 0,
+          "Key_name": "email",
+          "Seq_in_index": 1,
+          "Column_name": "email",
+          "Collation": "A",
+          "Cardinality": 10,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        },
+        {
+          "Table": "users",
+          "Non_unique": 1,
+          "Key_name": "idx_users_email",
+          "Seq_in_index": 1,
+          "Column_name": "email",
+          "Collation": "A",
+          "Cardinality": 10,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        },
+        {
+          "Table": "users",
+          "Non_unique": 1,
+          "Key_name": "idx_users_username",
+          "Seq_in_index": 1,
+          "Column_name": "username",
+          "Collation": "A",
+          "Cardinality": 10,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        },
+        {
+          "Table": "users",
+          "Non_unique": 1,
+          "Key_name": "idx_users_active",
+          "Seq_in_index": 1,
+          "Column_name": "is_active",
+          "Collation": "A",
+          "Cardinality": 2,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "YES",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": "",
+          "Visible": "YES",
+          "Expression": null
+        }
+      ],
+      "foreign_keys": [],
+      "sample_data": [
+        {
+          "id": 1,
+          "username": "john_doe",
+          "email": "john.doe@example.com",
+          "first_name": "John",
+          "last_name": "Doe",
+          "age": 28,
+          "is_active": 1,
+          "created_at": "2025-09-11 07:54:37",
+          "updated_at": "2025-09-11 07:54:37",
+          "last_login": "2024-01-15 10:30:00",
+          "profile_data": "{\"bio\": \"Software developer\", \"preferences\": {\"theme\": \"dark\", \"notifications\": true}}"
+        },
+        {
+          "id": 2,
+          "username": "jane_smith",
+          "email": "jane.smith@example.com",
+          "first_name": "Jane",
+          "last_name": "Smith",
+          "age": 32,
+          "is_active": 1,
+          "created_at": "2025-09-11 07:54:37",
+          "updated_at": "2025-09-11 07:54:37",
+          "last_login": "2024-01-14 15:45:00",
+          "profile_data": "{\"bio\": \"Product manager\", \"preferences\": {\"theme\": \"light\", \"notifications\": false}}"
+        },
+        {
+          "id": 3,
+          "username": "bob_wilson",
+          "email": "bob.wilson@example.com",
+          "first_name": "Bob",
+          "last_name": "Wilson",
+          "age": 45,
+          "is_active": 1,
+          "created_at": "2025-09-11 07:54:37",
+          "updated_at": "2025-09-11 07:54:37",
+          "last_login": "2024-01-13 09:15:00",
+          "profile_data": "{\"bio\": \"Marketing director\", \"preferences\": {\"theme\": \"auto\", \"notifications\": true}}"
+        }
+      ],
+      "relationships": {
+        "references": [],
+        "referenced_by": [
+          {
+            "table": "orders",
+            "column": "user_id",
+            "constraint": "orders_ibfk_1"
+          }
+        ]
+      }
+    }
+  }
+}

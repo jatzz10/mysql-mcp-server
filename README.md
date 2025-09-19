@@ -1,15 +1,15 @@
 # MySQL MCP Server
 
-A Model Context Protocol (MCP) server that provides read-only access to MySQL databases using SSE (Server-Sent Events) transport.
+A Model Context Protocol (MCP) server that provides read-only access to MySQL databases using streamable-http transport.
 
 ## Features
 
 - **Read-only access**: Only SELECT queries are allowed for security
 - **Multiple tools**: Query data, describe tables, list tables, and get table information
-- **SSE transport**: Uses Server-Sent Events for real-time communication over HTTP
+- **Streamable-HTTP transport**: Uses streamable HTTP for real-time communication
 - **Environment-based configuration**: Easy setup with environment variables
 - **Error handling**: Comprehensive error handling and logging
-- **HTTP-based**: Runs as an HTTP server with SSE endpoints
+- **HTTP-based**: Runs as an HTTP server with streamable endpoints
 
 ## Installation
 

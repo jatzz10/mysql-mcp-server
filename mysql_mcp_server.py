@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
 """
-MySQL MCP Server
+MySQL MCP Server - Optimized Version
 
 A Model Context Protocol (MCP) server that provides read-only access to MySQL databases.
-Supports querying data using SQL SELECT statements with SSE transport.
+Uses smart caching for optimal performance with MCP resources and tools.
 """
 
-import json
+import asyncio
 import logging
 import os
-from typing import Any, Dict, List, Optional
+from typing import Dict, Any
 
-import pymysql
 from dotenv import load_dotenv
 from fastmcp import FastMCP
+
+from schema import get_schema, query_with_cache, refresh_schema
+from database.connection import get_connection_params, get_db_connection
 
 # Load environment variables
 load_dotenv()
@@ -25,32 +27,22 @@ logger = logging.getLogger(__name__)
 # Initialize FastMCP server
 mcp = FastMCP("mysql-mcp-server")
 
-def get_connection_params() -> Dict[str, Any]:
-    """Get MySQL connection parameters from environment variables"""
-    return {
-        'host': os.getenv('MYSQL_HOST', 'localhost'),
-        'port': int(os.getenv('MYSQL_PORT', 3306)),
-        'user': os.getenv('MYSQL_USER'),
-        'password': os.getenv('MYSQL_PASSWORD'),
-        'database': os.getenv('MYSQL_DATABASE'),
-        'charset': 'utf8mb4',
-        'autocommit': True
-    }
-
-def get_db_connection():
-    """Get database connection"""
-    params = get_connection_params()
-    if not all([params['user'], params['password'], params['database']]):
-        raise ValueError("Missing required MySQL connection parameters")
+# MCP Resource for database schema
+@mcp.resource("database://schema")
+def get_database_schema() -> str:
+    """Get the complete database schema as a resource
     
-    try:
-        connection = pymysql.connect(**params)
-        logger.info(f"Connected to MySQL database: {params['host']}:{params['port']}/{params['database']}")
-        return connection
-    except Exception as e:
-        logger.error(f"Failed to connect to MySQL: {e}")
-        raise
+    This resource provides comprehensive database metadata including:
+    - Table structures and columns
+    - Indexes and relationships
+    - Row counts and table sizes
+    - Sample data for understanding
+    
+    The data is automatically cached and refreshed when needed.
+    """
+    return get_schema()
 
+# MCP Tool for querying data
 @mcp.tool()
 def query_mysql(query: str, limit: int = 1000) -> str:
     """Execute a SELECT query on the MySQL database
@@ -61,208 +53,67 @@ def query_mysql(query: str, limit: int = 1000) -> str:
     
     Returns:
         JSON string containing query results
+        
+    Note:
+        - Only SELECT queries are allowed for security
+        - Results are cached for 5 minutes for performance
+        - Query results are limited to prevent large responses
     """
-    if not query.strip():
-        raise ValueError("Query cannot be empty")
-    
-    # Basic security check - only allow SELECT statements
-    if not query.upper().strip().startswith("SELECT"):
-        raise ValueError("Only SELECT queries are allowed")
-    
-    # Add LIMIT if not present and limit is specified
-    if limit and "LIMIT" not in query.upper():
-        query += f" LIMIT {limit}"
-    
-    try:
-        connection = get_db_connection()
-        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            cursor.execute(query)
-            results = cursor.fetchall()
-            
-            # Format results as JSON
-            return json.dumps(results, indent=2, default=str)
-            
-    except Exception as e:
-        logger.error(f"Query execution error: {e}")
-        raise
+    return query_with_cache(query, limit)
 
+# MCP Tool for manual schema refresh
 @mcp.tool()
-def describe_table(table_name: str) -> str:
-    """Get table structure and metadata
-    
-    Args:
-        table_name: Name of the table to describe
+def refresh_schema_manual() -> str:
+    """Manually refresh the database schema
     
     Returns:
-        JSON string containing table structure and metadata
+        JSON string with refresh status
+        
+    Note:
+        - This tool forces a complete schema refresh
+        - Use only when you need the latest schema immediately
+        - Normal usage should rely on automatic refresh
     """
-    if not table_name.strip():
-        raise ValueError("Table name cannot be empty")
-    
-    try:
-        connection = get_db_connection()
-        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            # Get column information
-            cursor.execute(f"DESCRIBE `{table_name}`")
-            columns = cursor.fetchall()
-            
-            # Get table information
-            cursor.execute(f"""
-                SELECT 
-                    TABLE_NAME,
-                    TABLE_ROWS,
-                    DATA_LENGTH,
-                    INDEX_LENGTH,
-                    TABLE_COLLATION,
-                    CREATE_TIME,
-                    UPDATE_TIME
-                FROM information_schema.TABLES 
-                WHERE TABLE_SCHEMA = DATABASE() 
-                AND TABLE_NAME = %s
-            """, (table_name,))
-            table_info = cursor.fetchone()
-            
-            result = {
-                "table_name": table_name,
-                "columns": columns,
-                "table_info": table_info
-            }
-            
-            return json.dumps(result, indent=2, default=str)
-            
-    except Exception as e:
-        logger.error(f"Error describing table: {e}")
-        raise
+    return refresh_schema()
 
-@mcp.tool()
-def list_tables() -> str:
-    """List all tables in the current database
-    
-    Returns:
-        JSON string containing list of tables with metadata
-    """
-    try:
-        connection = get_db_connection()
-        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            cursor.execute("SHOW TABLES")
-            tables = cursor.fetchall()
-            
-            # Get additional info for each table
-            table_list = []
-            for table in tables:
-                table_name = list(table.values())[0]
-                cursor.execute(f"""
-                    SELECT 
-                        TABLE_ROWS,
-                        DATA_LENGTH,
-                        INDEX_LENGTH
-                    FROM information_schema.TABLES 
-                    WHERE TABLE_SCHEMA = DATABASE() 
-                    AND TABLE_NAME = %s
-                """, (table_name,))
-                info = cursor.fetchone()
-                
-                table_list.append({
-                    "name": table_name,
-                    "rows": info.get("TABLE_ROWS", 0) if info else 0,
-                    "data_length": info.get("DATA_LENGTH", 0) if info else 0,
-                    "index_length": info.get("INDEX_LENGTH", 0) if info else 0
-                })
-            
-            return json.dumps(table_list, indent=2, default=str)
-            
-    except Exception as e:
-        logger.error(f"Error listing tables: {e}")
-        raise
-
-@mcp.tool()
-def get_table_info(table_name: str) -> str:
-    """Get detailed table information including indexes
-    
-    Args:
-        table_name: Name of the table to get info for
-    
-    Returns:
-        JSON string containing detailed table information
-    """
-    if not table_name.strip():
-        raise ValueError("Table name cannot be empty")
-    
-    try:
-        connection = get_db_connection()
-        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            # Get detailed table information
-            cursor.execute(f"""
-                SELECT 
-                    TABLE_NAME,
-                    TABLE_ROWS,
-                    AVG_ROW_LENGTH,
-                    DATA_LENGTH,
-                    MAX_DATA_LENGTH,
-                    INDEX_LENGTH,
-                    DATA_FREE,
-                    AUTO_INCREMENT,
-                    CREATE_TIME,
-                    UPDATE_TIME,
-                    CHECK_TIME,
-                    TABLE_COLLATION,
-                    CHECKSUM,
-                    CREATE_OPTIONS,
-                    TABLE_COMMENT
-                FROM information_schema.TABLES 
-                WHERE TABLE_SCHEMA = DATABASE() 
-                AND TABLE_NAME = %s
-            """, (table_name,))
-            table_info = cursor.fetchone()
-            
-            if not table_info:
-                raise ValueError(f"Table '{table_name}' not found")
-            
-            # Get column information
-            cursor.execute(f"DESCRIBE `{table_name}`")
-            columns = cursor.fetchall()
-            
-            # Get index information
-            cursor.execute(f"SHOW INDEX FROM `{table_name}`")
-            indexes = cursor.fetchall()
-            
-            result = {
-                "table_info": table_info,
-                "columns": columns,
-                "indexes": indexes
-            }
-            
-            return json.dumps(result, indent=2, default=str)
-            
-    except Exception as e:
-        logger.error(f"Error getting table info: {e}")
-        raise
-
-def main():
-    """Main entry point"""
-    print("🚀 Starting MySQL MCP Server with SSE transport")
-    print("Press Ctrl+C to stop the server")
-    print("-" * 50)
-    
-    # Validate configuration
+def validate_configuration() -> bool:
+    """Validate server configuration"""
     try:
         params = get_connection_params()
         if not all([params['user'], params['password'], params['database']]):
-            print("❌ Error: Missing required MySQL connection parameters")
-            print("Please set MYSQL_USER, MYSQL_PASSWORD, and MYSQL_DATABASE in .env file")
-            return
+            logger.error("Missing required MySQL connection parameters")
+            return False
         
         # Test connection
         connection = get_db_connection()
         connection.close()
-        print("✅ Database connection successful")
+        logger.info("Database connection validated")
+        return True
         
     except Exception as e:
-        print(f"❌ Database connection failed: {e}")
+        logger.error(f"Configuration validation failed: {e}")
+        return False
+
+def main():
+    """Main entry point"""
+    print("🚀 Starting MySQL MCP Server (Optimized) with streamable-http transport")
+    print("Press Ctrl+C to stop the server")
+    print("-" * 60)
+    
+    # Validate configuration
+    if not validate_configuration():
+        print("❌ Configuration validation failed")
+        print("Please check your .env file and database connection")
         return
     
-    # Run the MCP server with SSE transport
-    mcp.run(transport="sse")
+    print("✅ Configuration validated")
+    print("✅ Smart caching enabled (Schema: 60min, Queries: 5min)")
+    print("✅ Auto-refresh enabled for schema changes")
+    print("✅ Server ready for MCP client connections")
+    print("-" * 60)
+    
+    # Run the MCP server with streamable-http transport
+    mcp.run(transport="streamable-http")
 
 if __name__ == "__main__":
     main()
